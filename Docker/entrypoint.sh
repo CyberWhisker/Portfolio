@@ -22,7 +22,7 @@ php artisan cache:clear
 php artisan route:clear
 
 echo "🗄 Running migrations..."
-php artisan migrate --force
+# php artisan migrate --force
 
 echo "✅ Laravel ready!"
 
