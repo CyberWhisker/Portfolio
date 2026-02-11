@@ -1,16 +1,21 @@
-FROM php:8.4.16-fpm
+FROM php:8.4-fpm
 
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
     libonig-dev \
+    libpq-dev \
     zip \
     unzip \
     git \
     curl \
+    netcat-openbsd \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install \
+        pdo \
+        pdo_pgsql \
+        pgsql \
         gd \
         mbstring \
         bcmath \

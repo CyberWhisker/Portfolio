@@ -36,9 +36,8 @@ class WelcomeController extends Controller
         $yearsOfExperience = $experience->sum(function ($jobs) {
             $startData = Carbon::parse($jobs->start_date);
             $endData = Carbon::parse($jobs->end_date);
-            return floor($startData->diffInYears($endData));
+            return $startData->diffInYears($endData);
         });
-
         $projectsData = Project::all()->count();
 
         $contractsData = $experience->count();
@@ -46,7 +45,7 @@ class WelcomeController extends Controller
         return [
             [
                 'label' => 'Years of Experience',
-                'value' => $yearsOfExperience,
+                'value' => floor($yearsOfExperience),
                 'suffix' => '+'
             ],
             [

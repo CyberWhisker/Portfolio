@@ -25,6 +25,7 @@ import {
     Sparkles,
 } from "lucide-react";
 import { Link, usePage } from "@inertiajs/react";
+import MainLayout from "@/layouts/main-layout";
 
 // ─── Utility: Fade-in on scroll ────────────────────────────────────────────
 function useInView(threshold = 0.15) {
@@ -104,7 +105,7 @@ const TESTIMONIALS = [
     },
 ];
 
-const iconMap = {
+const iconMap: any = {
     Frontend: Code2,
     Backend: Database,
     DevOps: Cloud,
@@ -228,7 +229,7 @@ function Hero() {
 
             <div className="relative z-10 max-w-4xl mx-auto">
                 {/* Badge */}
-                <div className={`inline-flex items-center gap-2 mb-8 transition-all duration-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
+                <div className={`inline-flex items-center gap-2 mb-8 transition-all duration-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"} mt-5`}>
                     <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 bg-emerald-500/5 px-4 py-1.5 text-sm">
                         <Sparkles className="w-3.5 h-3.5 mr-2 animate-pulse" />
                         Available for freelance work
@@ -404,33 +405,34 @@ function Skills() {
                 </h2>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-                    {skillDatas.map((skill: any, i: number) =>{ 
+                    {skillDatas.map((skill: any, i: number) => {
                         const Icon = iconMap[skill.label] || Code2; // default to Code2 if missing
-                    return (
-                        <Card
-                            key={i}
-                            className="hover:border-emerald-500/30 transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-500/5 group"
-                            style={{ animationDelay: `${i * 100}ms` }}
-                        >
-                            <CardHeader>
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 group-hover:bg-emerald-500/20 transition-colors duration-300">
-                                        <Icon className="w-5 h-5 text-emerald-400" />
+                        return (
+                            <Card
+                                key={i}
+                                className="hover:border-emerald-500/30 transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-500/5 group"
+                                style={{ animationDelay: `${i * 100}ms` }}
+                            >
+                                <CardHeader>
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 group-hover:bg-emerald-500/20 transition-colors duration-300">
+                                            <Icon className="w-5 h-5 text-emerald-400" />
+                                        </div>
+                                        <CardTitle className="text-base">{skill.label}</CardTitle>
                                     </div>
-                                    <CardTitle className="text-base">{skill.label}</CardTitle>
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="flex flex-wrap gap-2">
-                                    {skill.items.map((item: any, j: number) => (
-                                        <Badge key={j} variant="outline" className="border-zinc-700 text-xs hover:border-emerald-500/40 hover:text-emerald-400 transition-colors duration-300">
-                                            {item}
-                                        </Badge>
-                                    ))}
-                                </div>
-                            </CardContent>
-                        </Card>
-                    )})}
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="flex flex-wrap gap-2">
+                                        {skill.items.map((item: any, j: number) => (
+                                            <Badge key={j} variant="outline" className="border-zinc-700 text-xs hover:border-emerald-500/40 hover:text-emerald-400 transition-colors duration-300">
+                                                {item}
+                                            </Badge>
+                                        ))}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )
+                    })}
                 </div>
 
                 {/* Scrolling logo strip */}
@@ -558,9 +560,9 @@ function Contact() {
     return (
         <section id="contact" className="py-32 px-6" >
             <div ref={ref} className={`max-w-6xl mx-auto transition-all duration-800 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
-                <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-3 mb-4 ">
                     <span className="text-emerald-400 text-sm font-mono">05</span>
-                    <Separator className="w-12 bg-emerald-500/40" />
+                    <Separator className="bg-emerald-500/40" />
                     <span className="text-emerald-400 text-sm font-mono uppercase tracking-widest">Contact</span>
                 </div>
                 <h2 className="text-4xl md:text-5xl font-bold  mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
@@ -688,9 +690,7 @@ function Footer() {
 // ─── Main Export ────────────────────────────────────────────────────────────
 export default function Welcome() {
     return (
-        <div className="min-h-screen" style={{ fontFamily: "'Inter', sans-serif" }}>
-
-            <Navbar />
+        <MainLayout>
             <Hero />
             <About />
             <Skills />
@@ -698,6 +698,6 @@ export default function Welcome() {
             <Testimonials />
             <Contact />
             <Footer />
-        </div>
+        </MainLayout>
     );
 }
