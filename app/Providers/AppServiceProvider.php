@@ -29,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
 
     protected function configureDefaults(): void
     {
-        URL::forceScheme('https');
+        // URL::forceScheme('https');
 
         Date::use(CarbonImmutable::class);
 
