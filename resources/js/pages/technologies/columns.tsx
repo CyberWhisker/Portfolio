@@ -1,10 +1,10 @@
 "use client"
 
-import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table"
-import { Edit2, Trash } from "lucide-react";
 import { Update } from "./forms/update";
 import { Delete } from "./forms/delete";
+import { usePage } from "@inertiajs/react";
+import { Badge } from "@/components/ui/badge";
 
 export const columns: ColumnDef<any>[] = [
     {
@@ -29,10 +29,17 @@ export const columns: ColumnDef<any>[] = [
 ]
 
 const Actions = ({ row }: any) => {
+    const { auth }: any = usePage().props;
+
+    if (auth.user.role === "admin") {
+        return (
+            <div className="flex gap-3 justify-center">
+                <Update row={row.original} />
+                <Delete row={row.original} />
+            </div>
+        );
+    }
     return (
-        <div className="flex gap-3 justify-center">
-            <Update row={row.original} />
-            <Delete row={row.original} />
-        </div>
+        <Badge variant="destructive">Action Denied</Badge>
     );
 }
