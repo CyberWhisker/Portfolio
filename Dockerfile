@@ -6,10 +6,11 @@ FROM php:8.4-fpm
 WORKDIR /var/www/html
 
 # ----------------------------
-# Install system dependencies + PHP extensions + Nginx + Node 20 + npm
+# Install system dependencies + PHP extensions + Nginx + Node 20 + npm + supervisor
 # ----------------------------
 RUN apt-get update && apt-get install -y \
     nginx \
+    supervisor \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
@@ -54,13 +55,20 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader
 
 # ----------------------------
-# Install Node dependencies + build React/Vite frontend
+# Install Node dependencies + build React/Vite frontend + SSR bundle
 # ----------------------------
 RUN npm install
-RUN npm run build
+RUN npm run build:ssr
+
+# Verify both client and SSR builds exist
+RUN ls -la /var/www/html/public/build && \
+    test -f /var/www/html/public/build/manifest.json || \
+    (echo "ERROR: Client build failed - manifest.json not found" && exit 1) && \
+    test -f /var/www/html/bootstrap/ssr/ssr.js || \
+    (echo "ERROR: SSR build failed - ssr.js not found" && exit 1)
 
 # ----------------------------
-# Fix permissions for ALL Laravel directories including public/build
+# Fix permissions
 # ----------------------------
 RUN mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache \
     && chown -R www-data:www-data /var/www/html \
@@ -68,9 +76,10 @@ RUN mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache \
     && chmod -R 755 /var/www/html/public
 
 # ----------------------------
-# Copy Nginx config + entrypoint
+# Copy configs
 # ----------------------------
 COPY Docker/nginx/default.conf /etc/nginx/sites-available/default
+COPY Docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY Docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 

@@ -1,13 +1,15 @@
 #!/bin/sh
 
-# Cache Laravel
-php artisan config:clear
-php artisan route:clear
-php artisan view:clear
-php artisan cache:clear
+# Create storage link
+php artisan storage:link || true
 
-# Start PHP-FPM in the background
-php-fpm -D
+# Generate optimized caches for production
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
 
-# Start Nginx in the foreground
-nginx -g "daemon off;"
+# Create log directory for supervisor
+mkdir -p /var/log/supervisor
+
+# Start all services via supervisor
+exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
