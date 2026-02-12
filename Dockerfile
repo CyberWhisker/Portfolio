@@ -60,11 +60,12 @@ RUN npm install
 RUN npm run build
 
 # ----------------------------
-# Fix permissions
+# Fix permissions for ALL Laravel directories including public/build
 # ----------------------------
 RUN mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+    && chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 755 /var/www/html/public
 
 # ----------------------------
 # Copy Nginx config + entrypoint
