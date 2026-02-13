@@ -15,25 +15,23 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Projects() {
-    
+
     const { projects }: any = usePage().props;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <div className="p-4">
-                <Heading title="Projects Management" />
-                <Card>
-                    <CardHeader>
-                        <div className="flex w-full justify-between items-center">
-                            <CardTitle>Projects List</CardTitle>
-                            <Store />
-                        </div>
-                    </CardHeader>
-                    <CardContent>
-                        <DataTable data={projects} columns={columns} />
-                    </CardContent>
-                </Card>
-            </div>
+            <Heading title="Projects Management" />
+            <Card>
+                <CardHeader>
+                    <div className="flex w-full justify-between items-center">
+                        <CardTitle>Projects List</CardTitle>
+                        <Store />
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <DataTable data={projects} columns={columns} />
+                </CardContent>
+            </Card>
         </AppLayout>
     )
 }

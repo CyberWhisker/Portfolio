@@ -1,16 +1,23 @@
 <?php
 
+use App\Http\Controllers\EcomerceController;
 use App\Http\Controllers\ExperienceController;
+use App\Http\Controllers\MailController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TechnologiesController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WelcomeController;
-use App\Http\Controllers\EcomerceController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Laravel\Fortify\Features;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
+
+Route::get('/download-csv', function () {
+    $path = public_path('files/CV.pdf');
+
+    return response()->download($path, 'CV.pdf');
+});
 
 Route::get('dashboard', function () {
     return Inertia::render('dashboard/index');
@@ -46,6 +53,16 @@ Route::prefix('e-commerce')->name('e-commerce.')->group(function () {
     Route::patch('/{id}', [EcomerceController::class, 'update'])->name('update');
     Route::delete('/{id}', [EcomerceController::class, 'destroy'])->name('destroy');
 });
+Route::prefix('messages')->name('messages.')->group(function () {
+    Route::get('/', [MessageController::class, 'index'])->name('index');
+    Route::post('/', [MessageController::class, 'store'])->name('store');
+    Route::patch('/{id}', [MessageController::class, 'update'])->name('update');
+    Route::delete('/{id}', [MessageController::class, 'destroy'])->name('destroy');
+});
+Route::prefix('mails')->name('mails.')->group(function () {
+    Route::get('/', [MailController::class, 'index'])->name('index');
+    Route::post('/', [MailController::class, 'store'])->name('store');
+    Route::delete('/{id}', [MailController::class, 'destroy'])->name('destroy');
+});
 
-
-require __DIR__ . '/settings.php';
+require __DIR__.'/settings.php';

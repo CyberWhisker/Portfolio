@@ -17,25 +17,23 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Technologies() {
-    
+
     const { technologies }: any = usePage().props;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <div className="p-4">
-                <Heading title="Technologies Management" />
-                <Card>
-                    <CardHeader>
-                        <div className="flex w-full justify-between items-center">
-                            <CardTitle>Technologies List</CardTitle>
-                            <Store />
-                        </div>
-                    </CardHeader>
-                    <CardContent>
-                        <DataTable data={technologies} columns={columns} />
-                    </CardContent>
-                </Card>
-            </div>
+            <Heading title="Technologies Management" />
+            <Card>
+                <CardHeader>
+                    <div className="flex w-full justify-between items-center">
+                        <CardTitle>Technologies List</CardTitle>
+                        <Store />
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <DataTable data={technologies} columns={columns} />
+                </CardContent>
+            </Card>
         </AppLayout>
     )
 }

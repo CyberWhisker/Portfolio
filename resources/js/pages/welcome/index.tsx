@@ -23,9 +23,11 @@ import {
     ChevronRight,
     Star,
     Sparkles,
+    Facebook,
 } from "lucide-react";
-import { Link, usePage } from "@inertiajs/react";
+import { Link, useForm, usePage } from "@inertiajs/react";
 import MainLayout from "@/layouts/main-layout";
+import { disable } from "@/routes/two-factor";
 
 // ─── Utility: Fade-in on scroll ────────────────────────────────────────────
 function useInView(threshold = 0.15) {
@@ -112,65 +114,12 @@ const iconMap: any = {
     Design: Palette,
 };
 
-// ─── Navbar ─────────────────────────────────────────────────────────────────
-function Navbar() {
-
-    const { auth }: any = usePage().props
-
-    const [scrolled, setScrolled] = useState(false);
-    useEffect(() => {
-        const onScroll = () => setScrolled(window.scrollY > 40);
-        window.addEventListener("scroll", onScroll);
-        return () => window.removeEventListener("scroll", onScroll);
-    }, []);
-
-    const links = ["About", "Skills", "Projects", "Contact"];
-    return (
-        <nav
-            className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
-            style={{
-                background: scrolled ? "rgba(10,10,12,0.85)" : "transparent",
-                backdropFilter: scrolled ? "blur(12px)" : "none",
-                borderBottom: scrolled ? "1px solid rgba(255,255,255,0.06)" : "1px solid transparent",
-            }}
-        >
-            <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-                <a href="#hero">
-                    <span className="text-lg font-bold tracking-tight text-zinc-400" style={{ fontFamily: "'Playfair Display', serif" }}>
-                        <span className="text-emerald-400">{"<"}</span>Erick Lopez<span className="text-emerald-400">{" />"}</span>
-                    </span>
-                </a>
-                <div className="flex items-center gap-6">
-                    {links.map((l) => (
-                        <a
-                            key={l}
-                            href={`#${l.toLowerCase()}`}
-                            className="text-sm text-zinc-400 hover:text-emerald-400 dark:hover: transition-colors duration-300 tracking-wide uppercase"
-                        >
-                            {l}
-                        </a>
-                    ))}
-                </div>
-
-                {auth.user ? (
-                    <Link href={'/dashboard'}>
-                        <Button>Dashboard</Button>
-                    </Link>
-
-                ) : (
-                    <div className="gap-3 flex">
-                        <Link href={'/register'}>
-                            <Button>Register</Button>
-                        </Link>
-                        <Link href={'/login'}>
-                            <Button variant="outline">Login</Button>
-                        </Link>
-                    </div>
-                )}
-            </div>
-        </nav>
-    );
-}
+const socialLinks = [
+    { icon: Github, url: "https://github.com/CyberWhisker" },
+    { icon: Linkedin, url: "https://www.linkedin.com/in/erick-john-lopez-646299238/" },
+    { icon: Facebook, url: "https://www.facebook.com/tericult" },
+    { icon: Mail, url: "https://mail.google.com/mail/u/0/#inbox" },
+]
 
 // ─── Hero ───────────────────────────────────────────────────────────────────
 function Hero() {
@@ -247,7 +196,7 @@ function Hero() {
                             className="bg-clip-text text-transparent"
                             style={{ backgroundImage: "linear-gradient(135deg, #34d399, #6366f1, #f59e0b)" }}
                         >
-                            Erick Lopez
+                            Erick John Lopez
                         </span>
                     </span>
                 </h1>
@@ -282,13 +231,15 @@ function Hero() {
                             View My Work <ArrowDownRight className="w-4 h-4 ml-2" />
                         </Button>
                     </a>
-                    <Button
-                        variant="outline"
-                        size="lg"
-                        className="py-3 rounded-full transition-all duration-300 hover:scale-105 bg-transparent"
-                    >
-                        Download CV
-                    </Button>
+                    <a href="/download-csv">
+                        <Button
+                            variant="outline"
+                            size="lg"
+                            className="py-3 rounded-full transition-all duration-300 hover:scale-105 bg-transparent"
+                        >
+                            Download CV
+                        </Button>
+                    </a>
                 </div>
 
                 {/* Social links */}
@@ -296,13 +247,13 @@ function Hero() {
                     className={`flex items-center justify-center gap-5 mt-14 transition-all duration-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
                     style={{ transitionDelay: "750ms" }}
                 >
-                    {[Github, Linkedin, Twitter, Mail].map((Icon, i) => (
+                    {socialLinks.map((link, i) => (
                         <a
                             key={i}
-                            href="#"
+                            href={link.url}
                             className="p-3 rounded-full border border-zinc-800 text-zinc-500 hover:border-emerald-500/50 hover:text-emerald-400 transition-all duration-300 hover:scale-110 hover:bg-emerald-500/5"
                         >
-                            <Icon className="w-5 h-5" />
+                            <link.icon className="w-5 h-5" />
                         </a>
                     ))}
                 </div>
@@ -544,17 +495,24 @@ function Testimonials() {
 function Contact() {
     const { ref, isVisible } = useInView();
     const [submitted, setSubmitted] = useState(false);
-    const [form, setForm] = useState({ name: "", email: "", message: "" });
+    const { data, setData, post, processing } = useForm({ email: "", message: "", subject: "" });
+
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+        setData(e.target.name as "email" | "message" | "subject", e.target.value);
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        setSubmitted(true);
-        setTimeout(() => setSubmitted(false), 3500);
-        setForm({ name: "", email: "", message: "" });
+
+        post("/mails", {
+            preserveScroll: true,
+            onSuccess: () => {
+                setSubmitted(true);
+                setTimeout(() => setSubmitted(false), 3500);
+                setData({ email: "", message: "", subject: "" });
+            },
+        })
     };
 
     return (
@@ -582,24 +540,24 @@ function Contact() {
                         ) : (
                             <form onSubmit={handleSubmit} className="space-y-5">
                                 <div>
-                                    <Label className="text-zinc-400 text-sm mb-2 block">Name</Label>
+                                    <Label className="text-zinc-400 text-sm mb-2 block">Email</Label>
                                     <Input
-                                        name="name"
-                                        value={form.name}
+                                        name="email"
+                                        type="email"
+                                        value={data.email}
                                         onChange={handleChange}
-                                        placeholder="John Doe"
+                                        placeholder="john@example.com"
                                         required
                                         className="rounded-xl py-3 px-4"
                                     />
                                 </div>
                                 <div>
-                                    <Label className="text-zinc-400 text-sm mb-2 block">Email</Label>
+                                    <Label className="text-zinc-400 text-sm mb-2 block">Subject</Label>
                                     <Input
-                                        name="email"
-                                        type="email"
-                                        value={form.email}
+                                        name="subject"
+                                        value={data.subject}
                                         onChange={handleChange}
-                                        placeholder="john@example.com"
+                                        placeholder="System Request"
                                         required
                                         className="rounded-xl py-3 px-4"
                                     />
@@ -608,7 +566,7 @@ function Contact() {
                                     <Label className="text-zinc-400 text-sm mb-2 block">Message</Label>
                                     <Textarea
                                         name="message"
-                                        value={form.message}
+                                        value={data.message}
                                         onChange={handleChange}
                                         placeholder="Tell me about your project..."
                                         required
@@ -619,9 +577,10 @@ function Contact() {
                                 <Button
                                     type="submit"
                                     size="lg"
+                                    disabled={processing}
                                     className="w-full bg-emerald-500 hover:bg-emerald-400 font-semibold rounded-full py-3 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all duration-300 hover:scale-[1.02]"
                                 >
-                                    Send Message <Send className="w-4 h-4 ml-2" />
+                                    {processing ? "Sending..." : "Send Message"}
                                 </Button>
                             </form>
                         )}
@@ -630,9 +589,9 @@ function Contact() {
                     {/* Info cards */}
                     <div className="space-y-5">
                         {[
-                            { icon: Mail, label: "Email", value: "youremail@email.com" },
-                            { icon: Linkedin, label: "LinkedIn", value: "linkedin.com/in/yourprofile" },
-                            { icon: Github, label: "GitHub", value: "github.com/yourprofile" },
+                            { icon: Mail, label: "Email", value: "ejlopez0530@email.com" },
+                            { icon: Linkedin, label: "LinkedIn", value: "https://www.linkedin.com/in/erick-john-lopez-646299238/" },
+                            { icon: Github, label: "GitHub", value: "github.com/CyberWhisker" },
                         ].map((item, i) => (
                             <Card key={i}>
                                 <CardContent className="flex items-center gap-4 py-5">
@@ -676,9 +635,9 @@ function Footer() {
             <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
                 <p className="text-zinc-600 text-sm">© 2025 Erick Lopez. Built with React & shadcn/ui.</p>
                 <div className="flex items-center gap-4">
-                    {[Github, Linkedin, Twitter, Mail].map((Icon, i) => (
-                        <a key={i} href="#" className="text-zinc-600 hover:text-emerald-400 transition-colors duration-300">
-                            <Icon className="w-4 h-4" />
+                    {socialLinks.map((link, i) => (
+                        <a key={i} href={link.url} className="text-zinc-600 hover:text-emerald-400 transition-colors duration-300">
+                            <link.icon className="w-4 h-4" />
                         </a>
                     ))}
                 </div>

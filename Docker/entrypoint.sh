@@ -3,6 +3,9 @@
 # Create storage link
 php artisan storage:link || true
 
+# Migrate database
+php artisan migrate
+
 # Generate optimized caches for production
 php artisan config:cache
 php artisan route:cache

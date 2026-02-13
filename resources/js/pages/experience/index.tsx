@@ -15,25 +15,23 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Experiences() {
-    
+
     const { experiences }: any = usePage().props;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <div className="p-4">
-                <Heading title="Experiences Management" />
-                <Card>
-                    <CardHeader>
-                        <div className="flex w-full justify-between items-center">
-                            <CardTitle>Experiences List</CardTitle>
-                            <Store />
-                        </div>
-                    </CardHeader>
-                    <CardContent>
-                        <DataTable data={experiences} columns={columns} />
-                    </CardContent>
-                </Card>
-            </div>
+            <Heading title="Experiences Management" />
+            <Card>
+                <CardHeader>
+                    <div className="flex w-full justify-between items-center">
+                        <CardTitle>Experiences List</CardTitle>
+                        <Store />
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <DataTable data={experiences} columns={columns} />
+                </CardContent>
+            </Card>
         </AppLayout>
     )
 }

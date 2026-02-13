@@ -18,19 +18,17 @@ export default function Users() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <div className="p-4">
-                <Heading title="Users Management" />
-                <Card>
-                    <CardHeader>
-                        <div className="flex w-full justify-between items-center">
-                            <CardTitle>Users List</CardTitle>
-                        </div>
-                    </CardHeader>
-                    <CardContent>
-                        <DataTable data={users} columns={columns} />
-                    </CardContent>
-                </Card>
-            </div>
+            <Heading title="Users Management" />
+            <Card>
+                <CardHeader>
+                    <div className="flex w-full justify-between items-center">
+                        <CardTitle>Users List</CardTitle>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <DataTable data={users} columns={columns} />
+                </CardContent>
+            </Card>
         </AppLayout>
     )
 }

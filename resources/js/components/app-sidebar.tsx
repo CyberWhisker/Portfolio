@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { Briefcase, Code, CreditCard, LayoutDashboard, LayoutGrid, MoveLeftIcon, Users2 } from 'lucide-react';
+import { Briefcase, Code, CreditCard, Inbox, LayoutDashboard, LayoutGrid, LucideInbox, MoveLeftIcon, Users2 } from 'lucide-react';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -41,11 +41,20 @@ const mainNavItems: NavItem[] = [
         href: '/projects',
         icon: LayoutDashboard, // 🔹 represents projects / teams
     },
-
     {
         title: 'E-Commerce Platform',
         href: '/e-commerce',
         icon: CreditCard,
+    },
+    // {
+    //     title: 'Messages',
+    //     href: '/messages',
+    //     icon: Inbox,
+    // },
+    {
+        title: 'Mail',
+        href: '/mails',
+        icon: LucideInbox,
     }
 ];
 
