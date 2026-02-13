@@ -4,7 +4,7 @@
 php artisan storage:link || true
 
 # Migrate database
-php artisan migrate
+php artisan migrate --force
 
 # Generate optimized caches for production
 php artisan config:cache
